@@ -2,8 +2,29 @@ CREATE DATABASE chat;
 
 USE chat;
 
+CREATE TABLE users (
+  Id INT NOT NULL AUTO_INCREMENT,
+  Name varchar(255) UNIQUE,
+  PRIMARY KEY(Id)  
+);
+
+CREATE TABLE rooms (
+  Id int NOT NULL AUTO_INCREMENT,
+  RoomName varchar(255) UNIQUE,
+  PRIMARY KEY(Id)
+);
+
+CREATE TABLE friends (
+  Id int NOT NULL AUTO_INCREMENT,
+  User1 int,
+  User2 int,
+  PRIMARY KEY (Id),
+  FOREIGN KEY (User1) REFERENCES users (Id) ON DELETE CASCADE,
+  FOREIGN KEY (User2) REFERENCES users (Id) ON DELETE CASCADE
+);
+
 CREATE TABLE messages (
-  P_Id INT NOT NULL,
+  P_Id INT NOT NULL AUTO_INCREMENT,
   Username varchar(255),
   Txt varchar(255),
   Room varchar(255),
@@ -13,27 +34,6 @@ CREATE TABLE messages (
   PRIMARY KEY (P_Id),
   FOREIGN KEY (U_Id) REFERENCES users(Id) ON DELETE CASCADE,
   FOREIGN KEY (R_Id) REFERENCES rooms(Id) ON DELETE CASCADE
-);
-
-CREATE TABLE users (
-  Id INT NOT NULL,
-  Name varchar(255),
-  PRIMARY KEY(Id)  
-);
-
-CREATE TABLE rooms (
-  Id int NOT NULL,
-  RoomName varchar(255),
-  PRIMARY KEY(Id)
-);
-
-CREATE TABLE friends (
-  Id int NOT NULL,
-  User1 int,
-  User2 int,
-  PRIMARY KEY (Id),
-  FOREIGN KEY (User1) REFERENCES users (Id) ON DELETE CASCADE,
-  FOREIGN KEY (User2) REFERENCES users (Id) ON DELETE CASCADE
 );
 /* Create other tables and define schemas f----------or them here! */
 

@@ -5,24 +5,27 @@ var OurDB = db.theConnection;
 module.exports = {
   messages: {
     get: function (cb) { // a function which produces all the messages
-      OurDB.get().query('SELECT * FROM messages', function ( err, data) {
+      OurDB.query('SELECT * FROM messages', function ( err, data) {
         if (err) {
           return cb(err);
         }
         cb(null, data);
       }); 
     }, 
-    post: function (obj) {
+
+    post: function (obj, res) {
       // cb = OurDB.get().query('INSERT INTO messages (')
-      OurDB.get().query('SELECT name from users where name = obj.username', function(err, data1) {
+      OurDB.query('SELECT * from users where Name = ?', obj.username, function(err, data1) {
         if (err) {
           throw err;
         } else {
-          OurDB.get().query('INSERT INTO messages (username, Txt, Room, U_Id, R_Id, Created_At) VALUES (?, ?, ?, ?, ?)', 
-          [obj.username, obj.text, obj.room, data1, 1, obj.time], function(err, data2) {
+          OurDB.query('INSERT INTO messages (username, Txt, Room, U_Id, Created_At) VALUES (?, ?, ?, ?, ?)', 
+          [obj.username, obj.text, obj.roomname, data1[0].Id, obj.time], function(err, data2) {
             if (err) {
-              throw err;
-            } 
+              throw err;           
+            } else {
+              res.end();
+            }
           });
         }
       }); // a function which can be used to insert a message into the database
@@ -31,8 +34,15 @@ module.exports = {
 
   users: {
     // Ditto as above.
-    get: function () { },
-    post: function () {}
-  }
+    get: function () { 
+    },
+    post: function (name, res) {
+      OurDB.query('INSERT IGNORE INTO users (Name) VALUES (?)', name, function(err, data1) {
+        if (err) {
+          throw err;
+        } 
+      });
+    }
+  } 
 };
 
